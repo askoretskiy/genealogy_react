@@ -9,7 +9,11 @@ const onDomLoad = () => new Promise((resolve, reject) => {
     document.addEventListener('DOMContentLoaded', resolve);
 });
 
-onDomLoad().then(() => ReactDOM.render(Application, document.getElementById('root')));
+onDomLoad().then(() => {
+    let div = document.createElement('div');
+    document.body.appendChild(div);
+    ReactDOM.render(Application, div);
+});
 
 const Application = (
     <div>

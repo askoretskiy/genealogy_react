@@ -1,6 +1,7 @@
 'use strict';
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -32,6 +33,12 @@ module.exports = {
             filename: "[name].css",
             allChunks: true,
         }),
+        new HtmlWebpackPlugin({
+            filename: 'main.html',
+            chunks: ['main'],
+            xhtml: true,
+            inject: 'head',
+        })
     ],
     devServer: {
         noInfo: !true,   // use `false` to show chunks rendering
