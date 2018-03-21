@@ -1,0 +1,40 @@
+version: '3.2'
+
+services:
+  backend:
+    build:
+      dockerfile: backend.dockerfile
+      context: .
+    environment:
+      DJANGO_SETTINGS_MODULE: genealogy.settings
+      PYTHONUNBUFFERED: 1
+      PYTHONWARNINGS: all
+      PYTHONIOENCODING: utf-8
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONPATH: /home/
+    working_dir: /home/
+    command:
+      - sh
+      - -ec
+      - ./genealogy/manage.py migrate;
+        ./genealogy/manage.py shell -c "from django.contrib.auth.models import User; User.objects.filter(username='admin').exists() or User.objects.create_superuser('admin', None, 'password')";
+        ./genealogy/manage.py compilemessages || true;
+        exec ./genealogy/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./genealogy:/home/genealogy/
+      - ./pip.lock:/home/pip.lock
+      - ./requirements.txt:/home/requirements.txt
+  frontend:
+    build:
+      dockerfile: frontend.dockerfile
+      context: .
+    working_dir: /home/
+    command: npm run dev -- --host 0.0.0.0 --port 12000 --hot
+    ports:
+      - 12000:12000
+    volumes:
+      - ./frontend:/home/app
+      - ./webpack.config.js:/home/webpack.config.js
+      - ./package.json:/home/package.json
+      - ./yarn.lock:/home/yarn.lock
+      - ./.babelrc:/home/.babelrc
