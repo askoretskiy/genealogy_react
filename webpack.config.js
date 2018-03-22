@@ -1,5 +1,6 @@
 'use strict';
 
+const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -26,9 +27,14 @@ module.exports = {
                     ],
                 }),
             },
+            {
+                test: /\.yaml$/,
+                use: ['json-loader', 'yaml-loader'],
+            },
         ],
     },
     plugins: [
+        new webpack.NoEmitOnErrorsPlugin(),
         new ExtractTextPlugin({
             filename: "[name].css",
             allChunks: true,
@@ -38,7 +44,7 @@ module.exports = {
             chunks: ['main'],
             xhtml: true,
             inject: 'head',
-        })
+        }),
     ],
     devServer: {
         noInfo: !true,   // use `false` to show chunks rendering
