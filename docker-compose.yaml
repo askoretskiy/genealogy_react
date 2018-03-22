@@ -13,6 +13,7 @@ services:
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONPATH: /home/
     working_dir: /home/
+    restart: unless-stopped
     command:
       - sh
       - -ec
@@ -29,11 +30,13 @@ services:
       dockerfile: frontend.dockerfile
       context: .
     working_dir: /home/
+    restart: unless-stopped
     command: npm run dev -- --host 0.0.0.0 --port 12000 --hot
     ports:
       - 12000:12000
     volumes:
       - ./frontend:/home/app
+      - ./data:/home/data
       - ./webpack.config.js:/home/webpack.config.js
       - ./package.json:/home/package.json
       - ./yarn.lock:/home/yarn.lock
