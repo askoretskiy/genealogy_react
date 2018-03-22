@@ -7,6 +7,8 @@ import PEOPLE from '/home/data/people.yaml';
 
 import 'normalize.css';
 
+const TODAY = new Date();
+
 const onDomLoad = () => new Promise((resolve, reject) => {
     document.addEventListener('DOMContentLoaded', resolve);
 });
@@ -20,16 +22,18 @@ const PEOPLE_PREPARED = PEOPLE.map(person => ({
 
 const get_month_part = d => [d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds(), d.getMilliseconds()];
 
-const TODAY = new Date();
-
-
-const years_diff = (start, end) => {
-    if (typeof start === "string") {
-        start = new Date(start);
+const compare_months = (start, end) => {
+    const start_month = get_month_part(start);
+    const end_month = get_month_part(end);
+    for(let i=0;i<start_month.length;i++) {
+        if(end_month[i] < start_month[i]) {
+            return false;
+        }
     }
-    let diff = (get_month_part(end) < get_month_part(start)) ? 0 : 1;
-    return end.getFullYear() - start.getFullYear() - diff;
+    return true;
 };
+
+const years_diff = (start, end) => end.getFullYear() - start.getFullYear() - (compare_months(start, end) ? 0 : 1);
 
 const format_date = date => `${('' + date.getDate()).padStart(2, '0')}.${('' + (date.getMonth()+1)).padStart(2, '0')}.${date.getFullYear()}`;
 
